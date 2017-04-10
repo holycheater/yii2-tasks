@@ -38,7 +38,7 @@ class TaskQueueComponentTest extends TestCase
 
     public function testSend()
     {
-        $task = new StubTask;
+        $task = $this->createMock(TaskInterface::class);
         $msg = new TaskMessage([ 'object' => $task ]);
 
         $rmqMock = Yii::$app->get('rmq');
@@ -48,13 +48,5 @@ class TaskQueueComponentTest extends TestCase
 
         $component = new TaskQueueComponent;
         $component->send($task);
-    }
-}
-
-class StubTask implements TaskInterface {
-    public $somevar;
-
-    public function run()
-    {
     }
 }

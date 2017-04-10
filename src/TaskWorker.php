@@ -1,11 +1,9 @@
 <?php
 // vim: sw=4:ts=4:et:sta:
 
-namespace console\workers;
+namespace alexsalt\tasks;
 
 use Yii;
-use console\base\AbstractWorker;
-use console\base\TaskInterface;
 use Exception;
 
 /**
@@ -16,7 +14,7 @@ class TaskWorker extends AbstractWorker
     /**
      * run task from a message object, requeue on error
      */
-    public function processMessage($msg)
+    public function processMessage(BaseMessage $msg)
     {
         $task = $msg->object;
         if (!$task instanceof TaskInterface) {
@@ -35,7 +33,7 @@ class TaskWorker extends AbstractWorker
             return $this->ack($msg);
         } catch (Exception $e) {
             Yii::$app->errorHandler->logException($e);
-            return $this->requeue($msg);
+            return $this->nack($msg);
         }
     }
 }
