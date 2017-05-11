@@ -34,6 +34,8 @@ abstract class AbstractWorker extends Object
      */
     public $loopClass = StreamSelectLoop::class;
 
+    public $connection = 'rmq';
+
     /**
      * @var integer msg prefetch count
      */
@@ -63,7 +65,7 @@ abstract class AbstractWorker extends Object
      */
     public function start()
     {
-        $this->channel = Yii::$app->rmq->channel(42);
+        $this->channel = Yii::$app->get($this->connection)->channel(42);
         $this->channel->basic_qos(null, $this->qos, true);
         $this->channel->basic_consume($this->queue, 'worker', false, false, false, true, [ $this, 'onAmqpMessage' ]);
         $this->setWaitTimer(self::WAIT_BASE);
